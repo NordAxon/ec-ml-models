@@ -31,3 +31,24 @@ def qa_pipeline(question: str, context: str, status_code=200):
         return {'answer':answer, 'score':score}
     except NameError:
         raise HTTPException(status_code=500, detail="Model not working - did you forget to start the model?")
+
+
+@app.get("/text_generation/items/{context}")
+def text_generation(context: str, status_code=200):
+    try:
+        response = model.generate_text(context)[0]
+        generated_text = response["generated_text"]
+        return {'generated_text': generated_text}
+    except NameError:
+        raise HTTPException(status_code=500, detail="Model not working - did you forget to start the model?")
+
+
+@app.get("/sentiment_analysis/items/{text}")
+def sentiment_analysis(text: str, status_code=200):
+    try:
+        response = model.analyse_text(text)[0]
+        label = response["label"]
+        score = response["score"]
+        return {'sentiment_label': label, 'score': score}
+    except NameError:
+        raise HTTPException(status_code=500, detail="Model not working - did you forget to start the model?")
