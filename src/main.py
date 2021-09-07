@@ -4,8 +4,11 @@ from enum import Enum
 from PIL import Image
 from io import BytesIO
 import numpy as np
+from pathlib import Path
+import uvicorn
+from starlette.responses import RedirectResponse
 
-from utils import read_image
+from utils import read_imagefile
 
 
 class ModelName(str, Enum):
@@ -17,6 +20,10 @@ class ModelName(str, Enum):
 
 app = FastAPI()
 global model
+
+@app.get("/", include_in_schema=False)
+async def index():
+    return RedirectResponse(url="/docs")
 
 @app.get("/start/items/{chosen_model}", status_code=200)
 def start_model(chosen_model: ModelName):
@@ -65,11 +72,20 @@ def sentiment_analysis(text: str, status_code=200):
         raise HTTPException(status_code=500, detail="Model not working - did you forget to start the model?")
 
 
-@app.post("/classify_image")
+@app.post("/classify_image/")
 async def classify_image(file: UploadFile = File(...)):
-    try:
-        image = Image.open(file.file)
-        response = model.classify(image)
-        return response
-    except NameError:
-        raise HTTPException(status_code=500, detail="Model not working - did you forget to start the model?")
+    extension = Path(file.filename).suffix in (".jpg", ".jpeg", ".png")
+    if extension:
+        try:
+            file_contents = await file.read()
+            image = read_imagefile(file_contents)
+            response = model.classify(image)
+            return {key: str(value) for key, value in response.items()}
+        except NameError:
+            raise HTTPException(status_code=500, detail="Model not working - did you forget to start the model?")
+    else:
+        raise HTTPException(status_code=500, detail="Image must be jpg or png format")
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, debug=True)
