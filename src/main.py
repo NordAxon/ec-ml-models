@@ -10,7 +10,6 @@ from starlette.responses import RedirectResponse
 
 from utils import read_imagefile
 
-
 class ModelName(str, Enum):
     question_answering = "question_answering"
     text_generation = "text_generator"
