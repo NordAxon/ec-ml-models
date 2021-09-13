@@ -4,19 +4,19 @@
 
 ### 1. Create a new conda environment and activate it
    
-   conda create --name ENV_NAME python=3.9
+    conda create --name ENV_NAME python=3.9
    
-   conda activate ENV_NAME
+    conda activate ENV_NAME
 
 ### 2. Install requirements
 
-   pip install -r requirements.txt
+    pip install -r requirements.txt
    
 ### 3. Start the application
 
 Run from the root folder:
 
-   python src/main.py
+    python src/main.py
    
 This will print to the terminal when the application is up
    
