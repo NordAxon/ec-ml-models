@@ -18,7 +18,7 @@ class ModelName(str, Enum):
     image_classifier = "image_classifier"
 
 class ModelChoice(BaseModel):
-    name: ModelName = ModelName.sentiment_analysis
+    name: ModelName
 
 class QuestionAnswering(BaseModel):
     context: str
