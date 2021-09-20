@@ -83,17 +83,14 @@ def sentiment_analysis(text: TextContext):
 
 @app.post("/classify_image/")
 async def classify_image(file: UploadFile = File(...)):
-    extension_is_correct = Path(file.filename).suffix in (".jpg", ".jpeg", ".png")
-    if extension_is_correct:
-        try:
-            file_contents = await file.read()
-            image = read_imagefile(file_contents)
-            response = model.classify(image)
-            return {key: str(value) for key, value in response.items()}
-        except NameError:
-            raise HTTPException(status_code=500, detail="Model not working - did you forget to start the model?")
-    else:
-        raise HTTPException(status_code=500, detail="Image must be jpg or png format")
+    try:
+        file_contents = await file.read()
+        image = read_imagefile(file_contents)
+        response = model.classify(image)
+        return {key: str(value) for key, value in response.items()}
+    except NameError:
+        raise HTTPException(status_code=500, detail="Model not working - did you forget to start the model?")
+    
 
 
 if __name__ == "__main__":
