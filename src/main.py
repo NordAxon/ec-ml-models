@@ -102,7 +102,7 @@ async def classify_image(file: UploadFile = File(...)):
     except NameError:
         raise HTTPException(status_code=500, detail="Model not working - did you forget to start the model?")
     
-@app.post("/change_classes/")
+@app.put("/change_classes/")
 def change_model_classes(new_classes: Image_Classes):
     global model
     global chosen_model_name
