@@ -27,8 +27,14 @@ class QuestionAnswering(BaseModel):
 class TextContext(BaseModel):
     context: str
 
+class Image_Classes(BaseModel):
+    class_1: str
+    class_2: str
+    class_3: str
+
 app = FastAPI()
 global model
+global chosen_model_name
 
 @app.get("/", include_in_schema=False)
 async def index():
@@ -37,14 +43,19 @@ async def index():
 @app.post("/start/", status_code=200)
 def start_model(chosen_model: ModelChoice):
     global model
+    global chosen_model_name
     if chosen_model.name == ModelName.question_answering:
         model = models.QA()
+        chosen_model_name = chosen_model.name
     elif chosen_model.name == ModelName.text_generation:
         model = models.TextGenerator()
+        chosen_model_name = chosen_model.name
     elif chosen_model.name == ModelName.sentiment_analysis:
         model = models.SentimentAnalyser()
+        chosen_model_name = chosen_model.name
     elif chosen_model.name == ModelName.image_classifier:
         model = models.ImageClassifier()
+        chosen_model_name = chosen_model.name
     else:
         raise HTTPException(status_code=500, detail="Model name not correct, please revise.")
 
@@ -91,7 +102,13 @@ async def classify_image(file: UploadFile = File(...)):
     except NameError:
         raise HTTPException(status_code=500, detail="Model not working - did you forget to start the model?")
     
-
+@app.post("/change_classes/")
+def change_model_classes(new_classes: Image_Classes):
+    global model
+    global chosen_model_name
+    if chosen_model_name == ModelName.image_classifier:
+        model = models.ImageClassifier(
+            labels = [new_classes.class_1, new_classes.class_2, new_classes.class_3])
 
 if __name__ == "__main__":
     uvicorn.run(app, debug=True)
