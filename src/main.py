@@ -62,45 +62,56 @@ def start_model(chosen_model: ModelChoice):
 
 @app.post("/qa/")
 def qa_pipeline(question_answering: QuestionAnswering):
-    try:
-        response = model.answer_question(question_answering.question, question_answering.context)
-        answer = response['answer']
-        score = response['score']
-        return {'answer':answer, 'score':score}
-    except NameError:
-        raise HTTPException(status_code=500, detail="Model not working - did you forget to start the model?")
+    if chosen_model_name == ModelName.question_answering:
+        try:
+            response = model.answer_question(question_answering.question, question_answering.context)
+            answer = response['answer']
+            score = response['score']
+            return {'answer':answer, 'score':score}
+        except NameError:
+            raise HTTPException(status_code=500, detail="Model not working - did you forget to start the model?")
+    else:
+        raise HTTPException(status_code=500, detail="Remember to start the correct model before calling this method.")
 
 
 @app.post("/text_generation/")
 def text_generation(text_gen: TextContext):
-    try:
-        response = model.generate_text(text_gen.context)[0]
-        generated_text = response["generated_text"]
-        return {'generated_text': generated_text}
-    except NameError:
-        raise HTTPException(status_code=500, detail="Model not working - did you forget to start the model?")
-
+    if chosen_model_name == ModelName.text_generation:
+        try:
+            response = model.generate_text(text_gen.context)[0]
+            generated_text = response["generated_text"]
+            return {'generated_text': generated_text}
+        except NameError:
+            raise HTTPException(status_code=500, detail="Model not working - did you forget to start the model?")
+    else:
+        raise HTTPException(status_code=500, detail="Remember to start the correct model before calling this method.")
 
 @app.post("/sentiment_analysis/")
 def sentiment_analysis(text: TextContext):
-    try:
-        response = model.analyse_text(text.context)[0]
-        label = response["label"]
-        score = response["score"]
-        return {'sentiment_label': label, 'score': score}
-    except NameError:
-        raise HTTPException(status_code=500, detail="Model not working - did you forget to start the model?")
+    if chosen_model_name == ModelName.sentiment_analysis:
+        try:
+            response = model.analyse_text(text.context)[0]
+            label = response["label"]
+            score = response["score"]
+            return {'sentiment_label': label, 'score': score}
+        except NameError:
+            raise HTTPException(status_code=500, detail="Model not working - did you forget to start the model?")
+    else:
+        raise HTTPException(status_code=500, detail="Remember to start the correct model before calling this method.")
 
 
 @app.post("/classify_image/")
 async def classify_image(file: UploadFile = File(...)):
-    try:
-        file_contents = await file.read()
-        image = read_imagefile(file_contents)
-        response = model.classify(image)
-        return {key: str(value) for key, value in response.items()}
-    except NameError:
-        raise HTTPException(status_code=500, detail="Model not working - did you forget to start the model?")
+    if chosen_model_name == ModelName.image_classifier:
+        try:
+            file_contents = await file.read()
+            image = read_imagefile(file_contents)
+            response = model.classify(image)
+            return {key: str(value) for key, value in response.items()}
+        except NameError:
+            raise HTTPException(status_code=500, detail="Model not working - did you forget to start the model?")
+    else:
+        raise HTTPException(status_code=500, detail="Remember to start the correct model before calling this method.")
     
 @app.put("/change_classes/")
 def change_model_classes(new_classes: Image_Classes):
