@@ -60,7 +60,7 @@ def start_model(chosen_model: ModelChoice):
         raise HTTPException(status_code=500, detail="Model name not correct, please revise.")
 
 
-@app.post("/qa/")
+@app.post("/answer_question/")
 def qa_pipeline(question_answering: QuestionAnswering):
     if chosen_model_name == ModelName.question_answering:
         try:
@@ -74,7 +74,7 @@ def qa_pipeline(question_answering: QuestionAnswering):
         raise HTTPException(status_code=500, detail="Remember to start the correct model before calling this method.")
 
 
-@app.post("/text_generation/")
+@app.post("/generate_text/")
 def text_generation(text_gen: TextContext):
     if chosen_model_name == ModelName.text_generation:
         try:
@@ -86,7 +86,7 @@ def text_generation(text_gen: TextContext):
     else:
         raise HTTPException(status_code=500, detail="Remember to start the correct model before calling this method.")
 
-@app.post("/sentiment_analysis/")
+@app.post("/analyse_sentiment/")
 def sentiment_analysis(text: TextContext):
     if chosen_model_name == ModelName.sentiment_analysis:
         try:
