@@ -12,10 +12,10 @@ from pydantic import BaseModel
 from utils import read_imagefile
 
 class ModelName(str, Enum):
-    question_answering = "question_answering"
-    text_generation = "text_generator"
-    sentiment_analysis = "sentiment_analysis"
-    image_classifier = "image_classifier"
+    question_answering = "question_answer"
+    text_generation = "text_generate"
+    sentiment_analysis = "sentiment_analyze"
+    image_classifier = "image_classification"
 
 class ModelChoice(BaseModel):
     name: ModelName
