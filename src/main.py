@@ -18,14 +18,14 @@ class ModelName(str, Enum):
     image_classifier = "image_classification"
 
 class ModelChoice(BaseModel):
-    name: ModelName
+    model_name: ModelName
 
 class QuestionAnswering(BaseModel):
-    context: str
-    question: str
+    qa_context: str
+    qa_question: str
 
 class TextContext(BaseModel):
-    context: str
+    text_context: str
 
 class Image_Classes(BaseModel):
     class_1: str
@@ -44,18 +44,18 @@ async def index():
 def start_model(chosen_model: ModelChoice):
     global model
     global chosen_model_name
-    if chosen_model.name == ModelName.question_answering:
+    if chosen_model.model_name == ModelName.question_answering:
         model = models.QA()
-        chosen_model_name = chosen_model.name
-    elif chosen_model.name == ModelName.text_generation:
+        chosen_model_name = chosen_model.model_name
+    elif chosen_model.model_name == ModelName.text_generation:
         model = models.TextGenerator()
-        chosen_model_name = chosen_model.name
-    elif chosen_model.name == ModelName.sentiment_analysis:
+        chosen_model_name = chosen_model.model_name
+    elif chosen_model.model_name == ModelName.sentiment_analysis:
         model = models.SentimentAnalyser()
-        chosen_model_name = chosen_model.name
-    elif chosen_model.name == ModelName.image_classifier:
+        chosen_model_name = chosen_model.model_name
+    elif chosen_model.model_name == ModelName.image_classifier:
         model = models.ImageClassifier()
-        chosen_model_name = chosen_model.name
+        chosen_model_name = chosen_model.model_name
     else:
         raise HTTPException(status_code=500, detail="Model name not correct, please revise.")
 
