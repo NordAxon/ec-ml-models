@@ -64,7 +64,7 @@ def start_model(chosen_model: ModelChoice):
 def qa_pipeline(question_answering: QuestionAnswering):
     if chosen_model_name == ModelName.question_answering:
         try:
-            response = model.answer_question(question_answering.question, question_answering.context)
+            response = model.answer_question(question_answering.qa_question, question_answering.qa_context)
             answer = response['answer']
             score = response['score']
             return {'answer':answer, 'score':score}
@@ -78,7 +78,7 @@ def qa_pipeline(question_answering: QuestionAnswering):
 def text_generation(text_gen: TextContext):
     if chosen_model_name == ModelName.text_generation:
         try:
-            response = model.generate_text(text_gen.context)[0]
+            response = model.generate_text(text_gen.text_context)[0]
             generated_text = response["generated_text"]
             return {'generated_text': generated_text}
         except NameError:
