@@ -90,7 +90,7 @@ def text_generation(text_gen: TextContext):
 def sentiment_analysis(text: TextContext):
     if chosen_model_name == ModelName.sentiment_analysis:
         try:
-            response = model.analyse_text(text.context)[0]
+            response = model.analyse_text(text.text_context)[0]
             label = response["label"]
             score = response["score"]
             return {'sentiment_label': label, 'score': score}
